@@ -60,16 +60,16 @@ const userSchema = new Schema({
 
 
 // THIS IS OPTION 2 FOR THE VIRTUALS, TAKEN FROM MONGOOSE DOCUMENTATION
-    userSchema.virtual('thoughts', {
-        ref: 'Thought',
-        localField: '_id',
-        foreignField: 'user'
-    });
-    userSchema.virtual('friendCount', {
-        ref: 'Friends',
-        localField: '_id',
-        foreignField: 'user'
-    });
+    // userSchema.virtual('thoughts', {
+    //     ref: 'Thought',
+    //     localField: '_id',
+    //     foreignField: 'user'
+    // });
+    // userSchema.virtual('friendCount', {
+    //     ref: 'Friends',
+    //     localField: '_id',
+    //     foreignField: 'user'
+    // });
 
 //
 // thoughts: {
