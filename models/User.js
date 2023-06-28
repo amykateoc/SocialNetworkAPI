@@ -25,61 +25,39 @@ const userSchema = new Schema({
         localField: '_id',
         foreignField: 'user'
     },
-    friends: {
-        type: Array,
-        ref: 'Friends',
-        localField: '_id',
-        foreignField: 'user'
-    },
+    friends: [
+        {
+            type: Schema.Types.ObjctId,
+            ref: 'User'
+        }
+    ],
     toJSON: {
         virtuals: true,
     },
-    id: false,
+    id: true,
 });
 
 // THIS IS OPTION 1 FOR THE VIRTUALS, TAKEN FROM ACTIVITY 22
-// userSchema
-//     .virtual('thoughts')
-//     .get(function () {
-//         return `${this.thoughts.length}`;
-//     })
-//     .set(function () {
-//         const userThoughts = this.thoughts.length
-//         this.set({userThoughts});
-//     });
+userSchema
+    .virtual('thoughtCount')
+    .get(function () {
+        return `${this.thoughts.length}`;
+    })
+    .set(function () {
+        const userThoughts = this.thoughts.length
+        this.set({userThoughts});
+    });
 
-// userSchema
-//     .virtual('friends')
-//     .get(function () {
-//         return `${this.friends.length}`;
-//     })
-//     .set(function () {
-//         const userFriends = this.freinds.length
-//         this.set({userFriends})
-//     });
+userSchema
+    .virtual('friendCount')
+    .get(function () {
+        return `${this.friends.length}`;
+    })
+    .set(function () {
+        const userFriends = this.freinds.length
+        this.set({userFriends})
+    });
 
-
-// THIS IS OPTION 2 FOR THE VIRTUALS, TAKEN FROM MONGOOSE DOCUMENTATION
-    // userSchema.virtual('thoughts', {
-    //     ref: 'Thought',
-    //     localField: '_id',
-    //     foreignField: 'user'
-    // });
-    // userSchema.virtual('friendCount', {
-    //     ref: 'Friends',
-    //     localField: '_id',
-    //     foreignField: 'user'
-    // });
-
-//
-// thoughts: {
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: 'Thought'
-// },
-// friends: {
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: 'User'
-// }
 
 const User = model('User', userSchema);
 module.exports = User;

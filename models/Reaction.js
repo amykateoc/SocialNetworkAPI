@@ -33,12 +33,7 @@ reactionSchema
     .get(function () {
         return  `${this.createdAt}`
     })
-    //this is definitely wrong
-    .set(function (v) {
-        const month = v.split('/')[0];
-        const day = v.split('/')[1];
-        const year = v.split('/')[3];
-        this.set({ month, day, year });
-    })
 
-const Reaction = model('Reaction', reactionSchema);    module.exports = Reaction;
+
+// const Reaction = model('Reaction', reactionSchema);
+module.exports = reactionSchema;
