@@ -1,8 +1,8 @@
 const { Schema, model } = require('mongoose');
-const validateEmail = function(email) {
-    var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    return re.test(email)
-};
+// const validateEmail = function(email) {
+//     var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+//     return re.test(email)
+// };
 
 //most of this is referencing NoSql activity 22
 const userSchema = new Schema({
@@ -16,21 +16,22 @@ const userSchema = new Schema({
         type: String,
         required: true,
         unique: true,
-        validate: [validateEmail, 'Please fill a valid email address'],
         match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
     },
-    thoughts: {
-        type: Array,
-        ref: 'Thought',
-        localField: '_id',
-        foreignField: 'user'
-    },
+    thoughts: [
+        {
+        type: Schema.Types.ObjectId,
+        ref: 'Thought'
+    }
+],
     friends: [
         {
-            type: Schema.Types.ObjctId,
+            type: Schema.Types.ObjectId,
             ref: 'User'
         }
-    ],
+    ]
+},
+{
     toJSON: {
         virtuals: true,
     },
@@ -43,20 +44,20 @@ userSchema
     .get(function () {
         return `${this.thoughts.length}`;
     })
-    .set(function () {
-        const userThoughts = this.thoughts.length
-        this.set({userThoughts});
-    });
+    // .set(function () {
+    //     const userThoughts = this.thoughts.length
+    //     this.set({userThoughts});
+    // });
 
 userSchema
     .virtual('friendCount')
     .get(function () {
         return `${this.friends.length}`;
     })
-    .set(function () {
-        const userFriends = this.freinds.length
-        this.set({userFriends})
-    });
+    // .set(function () {
+    //     const userFriends = this.freinds.length
+    //     this.set({userFriends})
+    // });
 
 
 const User = model('User', userSchema);

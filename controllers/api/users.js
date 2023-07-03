@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { User } = require('../../models');
 
 //create new user
-router.post('/new-user', (req, res) => {
+router.post('/', (req, res) => {
     const newUser = new User({
         username: req.params.username,
         email: req.params.email
@@ -17,7 +17,7 @@ router.post('/new-user', (req, res) => {
 })
 
 //get all users
-router.get('/all-users', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const users = await User.find({});
         res.status(200).json(users);
@@ -98,3 +98,5 @@ router.delete('/:id/:friendId', async (req, res) => {
         res.status(500).json({ message: "Something went wrong" });
     }
 });
+
+module.exports = router

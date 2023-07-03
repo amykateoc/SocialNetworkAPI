@@ -2,14 +2,15 @@ const router = require('express').Router();
 const { Thought } = require('../../models');
 
 //create new thought
-router.post('/new-thought', async (req, res) => {
+router.post('/', async (req, res) => {
    try { 
-    const newThought = await new Thought(
-        { thoughtText: req.body.thoughtText },
-        { $addToSet: {username: req.body.username} }, //req.body????
-        { new: true }
-        // am I adding the username to the thought or is it the other way around?
+    const newThought = await Thought.create(
+        { thoughtText: req.body.thoughtText }
         );
+    await User.findOneAndUpdate(
+        { _id: req.body.userId },
+        { $push: {thoughts: newThought._id} }
+    )
         res.status(200).json(newThought)
 } catch {
     console.log("Something went wrong");
@@ -48,7 +49,7 @@ router.delete('/:id/:reactionId', async (req, res) => {
 });
 
 //get all thoughts
-router.get('/all-thoughts', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const thoughts = await Thought.find({}).populate("username").populate("reactions");
         res.status(200).json(thoughts);
@@ -87,3 +88,5 @@ router.put('/:id', async (req, res) => {
         res.status(500).json({ message: "Something went wrong" });
     }
 });
+
+module.exports = router

@@ -1,16 +1,16 @@
-const { Schema, model } = require('mongoose');
+const { Schema, Types } = require('mongoose');
 
 //most of this is referencing NoSql activity 22
 const reactionSchema = new Schema({
     reactionId: {
-        type: ObjectId,
-        default: new ObjectId,
+        type: Schema.Types.ObjectId,
+        default: () => new Types.ObjectId(),
         //read more about ObjectId data type 
     },
     createdAt: {
         type: Date,
-        default: created_at,
-        //use getter method to format the timestamp on query???
+        default: Date.now,
+        get: time => new Date(time).toLocaleString()
     },
     username: {
         type: String,
@@ -20,7 +20,9 @@ const reactionSchema = new Schema({
         type: String,
         required: true,
         maxLength: 280,
-    },
+    }
+},
+{
     toJSON: { 
         getters: true,
         virtuals: true 
@@ -28,11 +30,11 @@ const reactionSchema = new Schema({
     timestamps: true,
 });
 
-reactionSchema
-    .virtual('formatDate')
-    .get(function () {
-        return  `${this.createdAt}`
-    })
+// reactionSchema
+//     .virtual('formatDate')
+//     .get(function () {
+//         return  `${this.createdAt}`
+//     })
 
 
 // const Reaction = model('Reaction', reactionSchema);
