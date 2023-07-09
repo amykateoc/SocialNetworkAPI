@@ -4,8 +4,8 @@ const { User } = require('../../models');
 //create new user
 router.post('/', (req, res) => {
     const newUser = new User({
-        username: req.params.username,
-        email: req.params.email
+        username: req.body.username,
+        email: req.body.email
     });
     newUser.save();
     if (newUser) {
