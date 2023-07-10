@@ -1,34 +1,37 @@
 const router = require('express').Router();
-const { Thought } = require('../../models');
+const { Thought, User } = require('../../models');
 
 //create new thought
 router.post('/', async (req, res) => {
    try { 
     const newThought = await Thought.create(
-        { thoughtText: req.body.thoughtText }
+        { thoughtText: req.body.thoughtText,
+            username: req.body.username }
+        // { username: req.body.username }
         );
     await User.findOneAndUpdate(
-        { _id: req.body.userId },
+        // { _id: req.body.userId },
+        { username: req.body.username },
         { $push: {thoughts: newThought._id} }
     )
         res.status(200).json(newThought)
-} catch {
-    console.log("Something went wrong");
+} catch (err) {
+    console.log("Something went wrong", (err));
     res.status(500).json({ message: "Something went wrong" });
 }
 }); 
 
 //add reaction to thought
-router.put('/:id/:reactionId', async (req, res) => {
+router.put('/:id/', async (req, res) => {
     try {
         const reactionData = await Thought.findOneAndUpdate(
-            { _id: req.params.id },
-            { $addToSet: {reaction: req.params.reactionId} },
+            { id: req.params._id },
+            { $addToSet: {reactions: req.body} },
             { new: true }
         );
         res.status(200).json(reactionData);
     } catch (err) {
-        console.log("Something went wrong");
+        console.log("Something went wrong", err);
         res.status(500).json({ message: "Something went wrong" });
     }
 });
@@ -37,13 +40,13 @@ router.put('/:id/:reactionId', async (req, res) => {
 router.delete('/:id/:reactionId', async (req, res) => {
     try {
         const reactionData = await Thought.findOneAndUpdate(
-            { _id: req.params.id },
-            { $pull: {reaction: req.params.reactionId} },
+            { id: req.params._id },
+            { $pull: {reactions: {reactionId: req.params.reactionId}} },
             { new: true }
         );
         res.status(200).json(reactionData);
     } catch (err) {
-        console.log("Something went wrong");
+        console.log("Something went wrong", err);
         res.status(500).json({ message: "Something went wrong" });
     }
 });
@@ -63,12 +66,12 @@ router.get('/', async (req, res) => {
 router.delete('/:id', async (req, res) => {
     try {
         const thought = await Thought.findOneAndDelete(
-            { _id: req.params.id },
+            { id: req.params._id },
             //delete associated reactions????
         );
         res.status(200).json(thought);
     } catch (err) {
-        console.log("Something went wrong");
+        console.log("Something went wrong", err);
         res.status(500).json({ message: "Something went wrong" });
     }
 });
@@ -76,15 +79,15 @@ router.delete('/:id', async (req, res) => {
 //update a thought
 router.put('/:id', async (req, res) => {
     try {
-        const thought = await Thought.findOneAnUpdate(
-            { _id: req.params.id },
+        const thought = await Thought.findOneAndUpdate(
+            { id: req.params._id },
             { $set: req.body },
             { new: true }
         );
         res.status(200).json(thought);
         console.log(`Updated: ${thought}`);
     } catch (err) {
-        console.log("Something went wrong");
+        console.log("Something went wrong", err);
         res.status(500).json({ message: "Something went wrong" });
     }
 });
