@@ -62,6 +62,19 @@ router.get('/', async (req, res) => {
     }
 });
 
+//get one thought by id with reactions
+router.get('/:id', async (req, res) => {
+    try {
+        const thought = await Thought.findOne({
+            _id: req.params.id
+        }).populate("username").populate("reactions");
+        res.status(200).json(thought);
+    } catch (err) {
+        console.log('Something went wrong', err);
+        res.status(500).json({ message: 'Something went wrong' });
+    }
+});
+
 //delete thought
 router.delete('/:id', async (req, res) => {
     try {

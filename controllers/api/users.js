@@ -43,7 +43,7 @@ router.get('/:id', async (req, res) => {
 //update user
 router.put('/:id', async (req, res) => {
     try {
-        const user = await User.findOneAnUpdate(
+        const user = await User.findOneAndUpdate(
             { _id: req.params.id },
             { $set: req.body },
             { new: true }
@@ -51,7 +51,7 @@ router.put('/:id', async (req, res) => {
         res.status(200).json(user);
         console.log(`Updated: ${user}`);
     } catch (err) {
-        console.log("Something went wrong");
+        console.log("Something went wrong", err);
         res.status(500).json({ message: "Something went wrong" });
     }
 });
